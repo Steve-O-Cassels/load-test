@@ -1,0 +1,22 @@
+execution:
+  - executor: gatling
+    concurrency: 3
+    ramp-up: 5s
+    hold-for: 10s
+    scenario: alexandria-health-test
+    throughput: 5
+
+scenarios:
+  alexandria-health-test:
+    default-address: http://localhost:4000
+    requests:
+      - url: /restapi/query/records
+        headers:
+          Content-Type: application/json
+        body: "{\"consumingSiteId\":\"FMP_UK_FULL\",\"filters\":[{\"field\":\"SourceCountry\",\"values\":[\"great britain\"]},{\"field\":\"SourceCollection\",\"values\":[\"life events (bmds)\"]},{\"field\":\"FirstName\",\"values\":[\"rubeus\"],\"variants\":true}]}"
+        method: POST
+
+reporting:
+- module: passfail
+  criteria:
+  - rc404>1% stop as failed
